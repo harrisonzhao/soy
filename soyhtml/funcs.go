@@ -5,7 +5,7 @@ import (
 	"math/rand"
 	"strings"
 
-	"github.com/robfig/soy/data"
+	"github.com/harrisonzhao/soy/data"
 )
 
 type loopFunc func(s *state, key string) data.Value

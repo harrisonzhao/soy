@@ -8,9 +8,9 @@ import (
 	"strings"
 	"text/template"
 
-	"github.com/robfig/soy/ast"
-	"github.com/robfig/soy/data"
-	"github.com/robfig/soy/soyhtml"
+	"github.com/harrisonzhao/soy/ast"
+	"github.com/harrisonzhao/soy/data"
+	"github.com/harrisonzhao/soy/soyhtml"
 )
 
 type state struct {

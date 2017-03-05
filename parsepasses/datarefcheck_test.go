@@ -3,9 +3,9 @@ package parsepasses
 import (
 	"testing"
 
-	"github.com/robfig/soy/ast"
-	"github.com/robfig/soy/parse"
-	"github.com/robfig/soy/template"
+	"github.com/harrisonzhao/soy/ast"
+	"github.com/harrisonzhao/soy/parse"
+	"github.com/harrisonzhao/soy/template"
 )
 
 type checkerTest struct {

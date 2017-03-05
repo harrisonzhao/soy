@@ -8,9 +8,9 @@ import (
 	"runtime"
 	"runtime/debug"
 
-	"github.com/robfig/soy/ast"
-	"github.com/robfig/soy/data"
-	soyt "github.com/robfig/soy/template"
+	"github.com/harrisonzhao/soy/ast"
+	"github.com/harrisonzhao/soy/data"
+	soyt "github.com/harrisonzhao/soy/template"
 )
 
 // Logger collects output from {log} commands.

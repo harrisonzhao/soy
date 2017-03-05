@@ -4,7 +4,7 @@ import (
 	"errors"
 	"io"
 
-	"github.com/robfig/soy/template"
+	"github.com/harrisonzhao/soy/template"
 )
 
 // Options for js source generation.

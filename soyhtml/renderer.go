@@ -5,8 +5,8 @@ import (
 	"errors"
 	"io"
 
-	"github.com/robfig/soy/ast"
-	"github.com/robfig/soy/data"
+	"github.com/harrisonzhao/soy/ast"
+	"github.com/harrisonzhao/soy/data"
 )
 
 var ErrTemplateNotFound = errors.New("template not found")

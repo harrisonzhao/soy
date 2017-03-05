@@ -8,9 +8,9 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/robfig/soy/data"
-	"github.com/robfig/soy/parse"
-	"github.com/robfig/soy/template"
+	"github.com/harrisonzhao/soy/data"
+	"github.com/harrisonzhao/soy/parse"
+	"github.com/harrisonzhao/soy/template"
 )
 
 type d map[string]interface{}
