@@ -14,7 +14,6 @@ import (
 	"github.com/robfig/soy/parsepasses"
 	"github.com/robfig/soy/soyhtml"
 	"github.com/robfig/soy/template"
-	"gopkg.in/fsnotify.v0"
 )
 
 // Logger is used to print notifications and compile errors when using the
@@ -29,22 +28,11 @@ type Bundle struct {
 	files   []soyFile
 	globals data.Map
 	err     error
-	watcher *fsnotify.Watcher
 }
 
 // NewBundle returns an empty bundle.
 func NewBundle() *Bundle {
 	return &Bundle{globals: make(data.Map)}
-}
-
-// WatchFiles tells soy to watch any template files added to this bundle,
-// re-compile as necessary, and propagate the updates to your tofu.  It should
-// be called once, before adding any files.
-func (b *Bundle) WatchFiles(watch bool) *Bundle {
-	if watch && b.err == nil && b.watcher == nil {
-		b.watcher, b.err = fsnotify.NewWatcher()
-	}
-	return b
 }
 
 // AddTemplateDir adds all *.soy files found within the given directory
@@ -75,9 +63,6 @@ func (b *Bundle) AddTemplateFile(filename string) *Bundle {
 	content, err := ioutil.ReadFile(filename)
 	if err != nil {
 		b.err = err
-	}
-	if b.err == nil && b.watcher != nil {
-		b.err = b.watcher.Watch(filename)
 	}
 	return b.AddTemplateString(filename, string(content))
 }
@@ -142,9 +127,6 @@ func (b *Bundle) Compile() (*template.Registry, error) {
 		return nil, err
 	}
 
-	if b.watcher != nil {
-		go b.recompiler(&registry)
-	}
 	return &registry, nil
 }
 
@@ -154,42 +136,4 @@ func (b *Bundle) CompileToTofu() (*soyhtml.Tofu, error) {
 	var registry, err = b.Compile()
 	// TODO: Verify all used funcs exist and have the right # args.
 	return soyhtml.NewTofu(registry), err
-}
-
-func (b *Bundle) recompiler(reg *template.Registry) {
-	for {
-		select {
-		case ev := <-b.watcher.Event:
-			// If it's a rename, then fsnotify has removed the watch.
-			// Add it back, after a delay.
-			if ev.IsRename() || ev.IsDelete() {
-				time.Sleep(10 * time.Millisecond)
-				if err := b.watcher.Watch(ev.Name); err != nil {
-					Logger.Println(err)
-				}
-			}
-
-			// Recompile all the soy.
-			var bundle = NewBundle().
-				AddGlobalsMap(b.globals)
-			for _, soyfile := range b.files {
-				bundle.AddTemplateFile(soyfile.name)
-			}
-			var registry, err = bundle.Compile()
-			if err != nil {
-				Logger.Println(err)
-				continue
-			}
-
-			// update the existing template registry.
-			// (this is not goroutine-safe, but that seems ok for a development aid,
-			// as long as it works in practice)
-			*reg = *registry
-			Logger.Printf("update successful (%v)", ev)
-
-		case err := <-b.watcher.Error:
-			// Nothing to do with errors
-			Logger.Println(err)
-		}
-	}
 }
